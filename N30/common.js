@@ -1,4 +1,9 @@
 "use strict"
+//смещение относительно начала картинки
+var dx=0;
+var dy=0;
+var mainCont=document.getElementById('main');
+var draggedPict=null;
 function getElementPos(elem) {
     var bbox=elem.getBoundingClientRect();
     return {
@@ -6,29 +11,50 @@ function getElementPos(elem) {
         top: bbox.top+window.pageYOffset
     };
 }
-function initImg(mainContainer){
-    //console.log(mainContainer);
-    var imagesA=mainContainer.getElementsByTagName('img');
+function initImg(){
+    
+    var imagesA=document.querySelectorAll('#main img');
+    var startPos={}
     for (var i=0;i<imagesA.length;i++){
-        console.log(imagesA[i]);
-        var currPos=getElementPos(imagesA[i]);
-        console.log(currPos);
-        imagesA[i].setAttribute('style','position:absolute;left:'+currPos.left+'px;top:'+currPos.top+'px');
-        //imagesA[i].style.position='absolute';
-       // imagesA[i].style.left=currPos.left+'px';
-        //imagesA[i].style.top=currPos.top+'px';
-        //console.log(i)
-        
+        startPos[i]=getElementPos(imagesA[i]);
     }
-    var containerPos=getElementPos(mainContainer);
-    //console.log(containerPos);
+    for (var i in startPos){
+        imagesA[i].style.position='absolute';
+        imagesA[i].style.left=startPos[i].left+'px';
+        imagesA[i].style.top=startPos[i].top+'px';
+        imagesA[i].addEventListener('mousedown',imgDragStart,false);
+        imagesA[i].addEventListener('mouseup',imgDragEnd,false);
+    }
+
 }
-function divDragEnter(EO) {
-    // мяч вошёл в область div
+//обработчик начала перетаскивания
+function imgDragStart(EO){
     EO=EO||window.event;
     EO.preventDefault();
-    EO.currentTarget.style.borderStyle="dashed";
+    draggedPict=EO.currentTarget
+    var pos=getElementPos(EO.currentTarget)
+    dx=EO.pageX-pos.left;
+    dy=EO.pageY-pos.top;
+    mainCont.addEventListener('mousemove',pictMove,false);
+    EO.target.parentNode.appendChild(EO.target);
+    mainCont.style.cursor='pointer';
+
 }
-var mainContainer=document.getElementById('main');
-mainContainer.addEventListener('dragenter',divDragEnter,false)
-initImg(mainContainer);
+//обработчик конца перетаскивания
+function imgDragEnd(EO){
+    EO=EO||window.event;
+    mainCont.removeEventListener('mousemove',pictMove,false);
+    mainCont.style.cursor='auto';
+}
+
+//Обработчик изменения координаты мыши
+function pictMove(EO){
+    EO=EO||window.event;
+    mainCont.style.cursor='pointer';
+    draggedPict.style.left=(EO.pageX-dx)+'px';
+    draggedPict.style.top=(EO.pageY-dy)+'px';
+
+}
+
+window.addEventListener('load',initImg,false)
+
