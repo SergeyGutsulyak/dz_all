@@ -35,7 +35,7 @@ function imgDragStart(EO){
     var pos=getElementPos(EO.currentTarget)
     dx=EO.pageX-pos.left;
     dy=EO.pageY-pos.top;
-    mainCont.addEventListener('mousemove',pictMove,false);
+    window.addEventListener('mousemove',pictMove,false);
     EO.target.parentNode.appendChild(EO.target);
     mainCont.style.cursor='pointer';
 
@@ -43,7 +43,7 @@ function imgDragStart(EO){
 //обработчик конца перетаскивания
 function imgDragEnd(EO){
     EO=EO||window.event;
-    mainCont.removeEventListener('mousemove',pictMove,false);
+    window.removeEventListener('mousemove',pictMove,false);
     mainCont.style.cursor='auto';
 }
 
