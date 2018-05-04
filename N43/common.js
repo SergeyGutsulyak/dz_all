@@ -254,7 +254,10 @@ TennisField.prototype.outBoundRacket=function(obj){
 }
 
 TennisField.prototype.startGame=function(){
-    this.tennisBall.setSpeed(this.SPEED_BALL,3);
+    var zn=1;
+    var c=Math.floor(Math.random()*2 - 1);
+    if (c==0) zn=-1;
+    this.tennisBall.setSpeed(zn*this.SPEED_BALL,Math.floor(Math.random()*3+1));
     window.addEventListener('keydown',keyDown,false);
     window.addEventListener('keyup',keyUp,false);
     this.setStart();
